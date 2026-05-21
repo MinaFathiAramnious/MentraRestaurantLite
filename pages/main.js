@@ -1,8 +1,12 @@
 window.Module_Main = function({ restaurantId, userId, showToast, setActiveModule }) {
     const { useState, useEffect } = React;
 
-    // حالة التاريخ المحدد (الافتراضي: اليوم)
-    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+    // ==========================================
+    // 1. حالة التواريخ (من - إلى) - الافتراضي: اليوم
+    // ==========================================
+    const todayStr = new Date().toISOString().split('T')[0];
+    const [startDate, setStartDate] = useState(todayStr);
+    const [endDate, setEndDate] = useState(todayStr);
     
     // حالات الإحصائيات
     const [stats, setStats] = useState({
@@ -13,23 +17,25 @@ window.Module_Main = function({ restaurantId, userId, showToast, setActiveModule
     });
 
     // ==========================================
-    // منطق الـ Pagination
+    // 2. منطق الـ Pagination
     // ==========================================
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 3; // الليمت المطلوب
 
-    // تصفير الصفحة عند تغيير التاريخ
+    // تصفير الصفحة عند تغيير أي من التواريخ
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedDate]);
+    }, [startDate, endDate]);
 
-    // جلب البيانات بناءً على التاريخ المحدد باستخدام LiveQuery
-    const dayStart = new Date(selectedDate).setHours(0, 0, 0, 0);
-    const dayEnd = new Date(selectedDate).setHours(23, 59, 59, 999);
+    // ==========================================
+    // 3. جلب البيانات بناءً على نطاق التواريخ
+    // ==========================================
+    const dayStart = new Date(startDate).setHours(0, 0, 0, 0);
+    const dayEnd = new Date(endDate).setHours(23, 59, 59, 999);
 
     const ordersQuery = window.useLiveQuery(
         () => window.db.orders.where('created_at').between(dayStart, dayEnd).toArray(),
-        [selectedDate]
+        [startDate, endDate]
     );
 
     const tablesQuery = window.useLiveQuery(
@@ -61,7 +67,7 @@ window.Module_Main = function({ restaurantId, userId, showToast, setActiveModule
         }
     }, [ordersQuery, tablesQuery]);
 
-    // الطلبات المفتوحة حالياً (قيد التجهيز) وتطبيق الـ Pagination عليها
+    // الطلبات المفتوحة حالياً (قيد التجهيز) للفترة المحددة
     const activeOrders = ordersQuery ? ordersQuery.filter(o => o.status === 'open').sort((a, b) => b.created_at - a.created_at) : [];
     
     // حساب الصفحات واقتطاع البيانات
@@ -80,53 +86,57 @@ window.Module_Main = function({ restaurantId, userId, showToast, setActiveModule
 
     // دالة الانتقال السريع
     const handleNavigation = (moduleName) => {
-        if (setActiveModule) {
-            setActiveModule(moduleName);
-        } else {
-            console.error("setActiveModule prop is missing!");
-        }
+        if (setActiveModule) setActiveModule(moduleName);
     };
 
     return (
-        /* تمت إضافة pb-24 للموبايل لمنع الشريط السفلي من تغطية المحتوى، و overflow-x-hidden لمنع الشاشة من التحرك يميناً ويساراً */
-        <div className="space-y-6 fade-up pb-24 md:pb-6 w-full max-w-full overflow-x-hidden">
+        <div className="space-y-6 fade-up pb-24 md:pb-6 w-full max-w-full overflow-x-hidden flex flex-col h-full">
             
-            {/* الهيدر وفلتر التاريخ */}
-            <div className="flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100 gap-4 w-full">
-                <div className="flex items-center gap-3 text-slate-800 w-full md:w-auto">
+            {/* الهيدر وفلتر التاريخ (من - إلى) */}
+            <div className="flex flex-col xl:flex-row justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100 gap-4 w-full">
+                <div className="flex items-center gap-3 text-slate-800 w-full xl:w-auto">
                     <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-[#EA580C] text-lg shrink-0">
-                        <i className="fas fa-chart-line"></i>
+                        <i className="fas fa-chart-pie"></i>
                     </div>
                     <div>
                         <h3 className="font-black text-lg">ملخص الأداء والمبيعات</h3>
-                        <p className="text-xs font-bold text-slate-400">تابع حركة المطعم لحظة بلحظة</p>
+                        <p className="text-xs font-bold text-slate-400">إحصائيات المطعم للفترة المحددة</p>
                     </div>
                 </div>
                 
-                <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 w-full md:w-auto justify-between">
-                    <i className="fas fa-calendar-alt text-slate-400 ml-2"></i>
-                    <input 
-                        type="date" 
-                        value={selectedDate} 
-                        onChange={(e) => setSelectedDate(e.target.value)}
-                        className="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer w-full text-left dir-ltr"
-                    />
+                <div className="flex flex-col sm:flex-row items-center gap-3 w-full xl:w-auto">
+                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 w-full sm:w-auto">
+                        <span className="text-xs font-bold text-slate-400">من:</span>
+                        <input 
+                            type="date" 
+                            value={startDate} 
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer w-full text-left dir-ltr"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 w-full sm:w-auto">
+                        <span className="text-xs font-bold text-slate-400">إلى:</span>
+                        <input 
+                            type="date" 
+                            value={endDate} 
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer w-full text-left dir-ltr"
+                        />
+                    </div>
                 </div>
             </div>
 
             {/* البطاقات الإحصائية (Stats Cards) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
-                {/* إيرادات اليوم */}
                 <div className="bg-gradient-to-br from-[#EA580C] to-[#F97316] p-6 rounded-2xl shadow-lg shadow-orange-500/20 relative overflow-hidden text-white w-full">
                     <i className="fas fa-wallet absolute left-0 bottom-0 text-7xl opacity-20 transform -translate-x-4 translate-y-4"></i>
-                    <h4 className="text-orange-100 font-bold text-sm mb-1">مبيعات التاريخ المحدد</h4>
+                    <h4 className="text-orange-100 font-bold text-sm mb-1">المبيعات للفترة المحددة</h4>
                     <div className="flex items-end gap-1">
                         <span className="text-3xl font-black">{stats.totalIncome.toLocaleString()}</span>
                         <span className="text-sm font-bold mb-1 pb-1">ج.م</span>
                     </div>
                 </div>
 
-                {/* إجمالي الطلبات */}
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden w-full">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-sky-50 text-sky-500 rounded-full flex items-center justify-center text-2xl">
                         <i className="fas fa-receipt"></i>
@@ -138,7 +148,6 @@ window.Module_Main = function({ restaurantId, userId, showToast, setActiveModule
                     </div>
                 </div>
 
-                {/* الطاولات المشغولة */}
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden w-full sm:col-span-2 md:col-span-1">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center text-2xl">
                         <i className="fas fa-chair"></i>
@@ -151,7 +160,7 @@ window.Module_Main = function({ restaurantId, userId, showToast, setActiveModule
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full flex-1">
                 
                 {/* قائمة الوصول السريع */}
                 <div className="lg:col-span-1 space-y-4">
@@ -179,20 +188,20 @@ window.Module_Main = function({ restaurantId, userId, showToast, setActiveModule
                 </div>
 
                 {/* الطلبات المفتوحة حالياً (قيد التجهيز) مع Pagination */}
-                <div className="lg:col-span-2 flex flex-col">
+                <div className="lg:col-span-2 flex flex-col h-full">
                     <h3 className="font-black text-slate-700 flex items-center gap-2 mb-4">
-                        <i className="fas fa-fire text-rose-500"></i> طلبات قيد التجهيز (للتاريخ المحدد)
+                        <i className="fas fa-fire text-rose-500"></i> طلبات قيد التجهيز (للفترة المحددة)
                     </h3>
                     
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden w-full flex-1 flex flex-col justify-between">
                         {activeOrders.length === 0 ? (
                             <div className="p-8 text-center text-slate-400 flex-1 flex flex-col justify-center">
                                 <i className="fas fa-check-circle text-4xl text-slate-200 mb-3"></i>
-                                <p className="font-bold text-sm">لا توجد طلبات معلقة حالياً في هذا التاريخ.</p>
+                                <p className="font-bold text-sm">لا توجد طلبات معلقة حالياً في هذه الفترة.</p>
                             </div>
                         ) : (
                             <>
-                                <div className="overflow-x-auto hide-scrollbar w-full">
+                                <div className="overflow-x-auto hide-scrollbar w-full flex-1">
                                     <table className="w-full text-right text-sm whitespace-nowrap">
                                         <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold">
                                             <tr>
@@ -209,19 +218,13 @@ window.Module_Main = function({ restaurantId, userId, showToast, setActiveModule
                                                 return (
                                                     <tr key={order.id} className="hover:bg-slate-50 transition-colors">
                                                         <td className="p-4 font-black text-slate-700">#{order.id}</td>
-                                                        <td className="p-4">
-                                                            <span className={`px-2 py-1 rounded text-[10px] font-black ${typeInfo.color}`}>
-                                                                {typeInfo.text}
-                                                            </span>
-                                                        </td>
+                                                        <td className="p-4"><span className={`px-2 py-1 rounded text-[10px] font-black ${typeInfo.color}`}>{typeInfo.text}</span></td>
                                                         <td className="p-4 font-bold text-slate-600">
                                                             {order.customer_name} 
                                                             {order.order_type === 'dine_in' && order.table_id && <span className="text-[10px] text-slate-400 mr-2">(طاولة مقيدة)</span>}
                                                         </td>
                                                         <td className="p-4 font-black text-[#EA580C]">{order.final_total} ج</td>
-                                                        <td className="p-4 text-xs font-bold text-slate-400">
-                                                            {new Date(order.created_at).toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'})}
-                                                        </td>
+                                                        <td className="p-4 text-xs font-bold text-slate-400">{new Date(order.created_at).toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'})}</td>
                                                     </tr>
                                                 );
                                             })}
@@ -229,31 +232,16 @@ window.Module_Main = function({ restaurantId, userId, showToast, setActiveModule
                                     </table>
                                 </div>
 
-                                {/* أزرار التحكم بالـ Pagination */}
                                 {totalPages > 1 && (
-                                    <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-center">
+                                    <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-center shrink-0">
                                         <div className="flex items-center justify-between bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 w-full md:w-80">
-                                            <button 
-                                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                                                disabled={currentPage === 1}
-                                                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-600 disabled:opacity-30 hover:bg-[#EA580C] hover:text-white transition-colors"
-                                            >
-                                                <i className="fas fa-chevron-right text-xs"></i>
-                                            </button>
-                                            
+                                            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-600 disabled:opacity-30 hover:bg-[#EA580C] hover:text-white transition-colors"><i className="fas fa-chevron-right text-xs"></i></button>
                                             <div className="flex items-center gap-2 font-bold text-xs text-slate-500">
                                                 <span className="bg-[#EA580C] text-white w-6 h-6 rounded-md flex items-center justify-center shadow-sm">{currentPage}</span>
                                                 <span>من</span>
                                                 <span className="w-6 h-6 rounded-md bg-slate-100 flex items-center justify-center">{totalPages}</span>
                                             </div>
-
-                                            <button 
-                                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                                                disabled={currentPage === totalPages}
-                                                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-600 disabled:opacity-30 hover:bg-[#EA580C] hover:text-white transition-colors"
-                                            >
-                                                <i className="fas fa-chevron-left text-xs"></i>
-                                            </button>
+                                            <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-600 disabled:opacity-30 hover:bg-[#EA580C] hover:text-white transition-colors"><i className="fas fa-chevron-left text-xs"></i></button>
                                         </div>
                                     </div>
                                 )}
@@ -261,12 +249,44 @@ window.Module_Main = function({ restaurantId, userId, showToast, setActiveModule
                         )}
                     </div>
                 </div>
-				
+            </div>
+
+            {/* ========================================== */}
+            {/* الإعلان التسويقي الفاخر (PRO Version Ad) */}
+            {/* ========================================== */}
+            <div className="mt-8 bg-gradient-to-r from-slate-900 via-[#0f172a] to-slate-900 rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-800 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 group w-full shrink-0">
+                
+                {/* تأثيرات الخلفية داخل الإعلان */}
+                <div className="absolute right-0 top-0 w-64 h-64 bg-[#EA580C] rounded-full mix-blend-screen filter blur-[80px] opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                <div className="absolute left-0 bottom-0 w-48 h-48 bg-amber-500 rounded-full mix-blend-screen filter blur-[60px] opacity-10"></div>
+                
+                <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start text-center md:text-right gap-5">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-[#EA580C] p-0.5 shadow-lg shadow-orange-500/20 shrink-0">
+                        <div className="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center text-amber-500 text-3xl">
+                            <i className="fas fa-crown"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+                            <h3 className="text-xl md:text-2xl font-black text-white tracking-wide">MentraResto <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">PRO</span></h3>
+                            <span className="bg-amber-500/20 text-amber-400 text-[9px] font-black px-2 py-0.5 rounded-full border border-amber-500/30">الإصدار السحابي</span>
+                        </div>
+                        <p className="text-slate-400 font-bold text-sm leading-relaxed max-w-lg">
+                            ارتقِ بمطعمك لمستوى آخر! مزامنة سحابية، إدارة فروع متعددة، تقارير تحليلية ذكية بالذكاء الاصطناعي، وربط مع تطبيقات التوصيل.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="relative z-10 w-full md:w-auto shrink-0">
+                    <button onClick={() => window.open('https://wa.me/01211934816', '_blank')} className="w-full md:w-auto bg-gradient-to-l from-amber-500 to-[#EA580C] hover:from-amber-400 hover:to-orange-500 text-white font-black px-8 py-4 rounded-xl shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_30px_rgba(234,88,12,0.5)] transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1">
+                        <i className="fas fa-rocket text-xl"></i>
+                        الترقية للنسخة السحابية
+                    </button>
+                    <p className="text-center text-[10px] text-slate-500 font-bold mt-2">تواصل معنا لمعرفة الباقات والأسعار</p>
+                </div>
 
             </div>
-			
-			
+
         </div>
-		
     );
 };

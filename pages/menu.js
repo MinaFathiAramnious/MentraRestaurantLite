@@ -5,15 +5,18 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
     // 1. حالات الشاشة (State Management)
     // ==========================================
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedFilterCategory, setSelectedFilterCategory] = useState('all'); // للفلترة
+    const [selectedFilterCategory, setSelectedFilterCategory] = useState('all'); 
     const [currentPage, setCurrentPage] = useState(1);
-    const ITEMS_PER_PAGE = 3; // تم زيادة الليمت إلى 5 لتحسين العرض
+    const ITEMS_PER_PAGE = 3; 
 
     // حالات النوافذ المنبثقة
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [showItemModal, setShowItemModal] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [editingItem, setEditingItem] = useState(null); // يحدد ما إذا كنا في وضع الإضافة أو التعديل
+    
+    // يحدد ما إذا كنا في وضع الإضافة أو التعديل
+    const [editingItem, setEditingItem] = useState(null); 
+    const [editingCategory, setEditingCategory] = useState(null); 
 
     // بيانات الأقسام
     const [catName, setCatName] = useState('');
@@ -44,12 +47,10 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
         if (!menuItems) return [];
         let result = menuItems;
 
-        // فلترة بالقسم
         if (selectedFilterCategory !== 'all') {
             result = result.filter(item => item.category_id === parseInt(selectedFilterCategory));
         }
 
-        // فلترة بالاسم
         if (searchQuery.trim() !== '') {
             const query = searchQuery.toLowerCase();
             result = result.filter(item => item.name.toLowerCase().includes(query));
@@ -58,7 +59,6 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
         return result;
     }, [menuItems, searchQuery, selectedFilterCategory]);
 
-    // تصفير الصفحة عند تغيير الفلاتر
     useEffect(() => { setCurrentPage(1); }, [searchQuery, selectedFilterCategory]);
 
     const totalPages = Math.max(1, Math.ceil(filteredItems.length / ITEMS_PER_PAGE));
@@ -68,24 +68,83 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
     );
 
     // ==========================================
-    // 4. العمليات (حفظ، تعديل، حذف)
+    // 4. العمليات (الأقسام)
     // ==========================================
     
-    // حفظ القسم
-    const handleAddCategory = async (e) => {
+    // فتح نافذة القسم (للإضافة أو التعديل)
+    const openCategoryModal = (cat = null) => {
+        if (cat) {
+            setEditingCategory(cat);
+            setCatName(cat.name);
+            setCatIcon(cat.icon);
+        } else {
+            setEditingCategory(null);
+            setCatName('');
+            setCatIcon('fa-utensils');
+        }
+        setShowCategoryModal(true);
+    };
+
+    // حفظ القسم (إضافة أو تعديل)
+    const handleSaveCategory = async (e) => {
         e.preventDefault();
-        if (!catName.trim()) return showToast("الرجاء إدخال اسم القسم", "error");
+        const trimmedName = catName.trim();
+        if (!trimmedName) return showToast("الرجاء إدخال اسم القسم", "error");
         
         setIsSubmitting(true);
         try {
-            await window.RestaurantQueries.addCategory(catName, catIcon);
-            showToast("تم إضافة القسم بنجاح", "success");
-            setShowCategoryModal(false); setCatName('');
-        } catch (error) { showToast("حدث خطأ أثناء الإضافة", "error"); } 
-        finally { setIsSubmitting(false); }
+            if (editingCategory) {
+                // تعديل قسم موجود
+                await window.db.categories.update(editingCategory.id, {
+                    name: trimmedName,
+                    icon: catIcon
+                });
+                showToast("تم تعديل القسم بنجاح", "success");
+            } else {
+                // إضافة قسم جديد
+                await window.RestaurantQueries.addCategory(trimmedName, catIcon);
+                showToast("تم إضافة القسم بنجاح", "success");
+            }
+            setShowCategoryModal(false);
+        } catch (error) { 
+            showToast("حدث خطأ أثناء الحفظ", "error"); 
+        } finally { 
+            setIsSubmitting(false); 
+        }
     };
 
-    // فتح نافذة الإضافة أو التعديل
+    // حذف قسم (مع حماية ضد حذف قسم يحتوي على أصناف)
+    const handleDeleteCategory = async () => {
+        if (!editingCategory) return;
+        
+        // التحقق أولاً إذا كان القسم يحتوي على أصناف
+        const itemsInCat = await window.db.menu_items.where('category_id').equals(editingCategory.id).count();
+        if (itemsInCat > 0) {
+            return showToast("عفواً، لا يمكن حذف القسم لوجود أصناف بداخله. احذف الأصناف أولاً.", "error");
+        }
+
+        if(!confirm(`هل أنت متأكد من حذف قسم (${editingCategory.name}) نهائياً؟`)) return;
+
+        setIsSubmitting(true);
+        try {
+            await window.db.categories.delete(editingCategory.id);
+            if (selectedFilterCategory === editingCategory.id) {
+                setSelectedFilterCategory('all');
+            }
+            showToast("تم حذف القسم بنجاح", "success");
+            setShowCategoryModal(false);
+        } catch (error) {
+            showToast("حدث خطأ أثناء الحذف", "error");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // ==========================================
+    // 5. العمليات (الأصناف)
+    // ==========================================
+    
+    // فتح نافذة الإضافة أو التعديل للصنف
     const openItemModal = (item = null) => {
         if (item) {
             setEditingItem(item);
@@ -103,7 +162,7 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
         setShowItemModal(true);
     };
 
-    // التحقق والحفظ (إضافة أو تعديل)
+    // حفظ الصنف (إضافة أو تعديل)
     const handleSaveItem = async (e) => {
         e.preventDefault();
         const trimmedName = itemName.trim();
@@ -112,7 +171,6 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
             return showToast("الرجاء إكمال البيانات الأساسية", "error");
         }
 
-        // التحقق من تكرار الاسم (يستثني الصنف نفسه في حالة التعديل)
         const isDuplicate = menuItems.some(i => i.name.toLowerCase() === trimmedName.toLowerCase() && i.id !== editingItem?.id);
         if (isDuplicate) {
             return showToast("هذا الصنف مسجل بالفعل في المنيو!", "error");
@@ -121,7 +179,6 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
         setIsSubmitting(true);
         try {
             if (editingItem) {
-                // تعديل
                 await window.db.menu_items.update(editingItem.id, {
                     name: trimmedName,
                     price: parseFloat(itemPrice),
@@ -130,7 +187,6 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
                 });
                 showToast("تم تعديل الصنف بنجاح", "success");
             } else {
-                // إضافة جديدة
                 await window.RestaurantQueries.addMenuItem(parseInt(itemCategory), trimmedName, parseFloat(itemPrice), parseFloat(itemCost || 0));
                 showToast("تم الإضافة للمنيو بنجاح", "success");
             }
@@ -151,10 +207,9 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
     const iconOptions = ['fa-utensils', 'fa-hamburger', 'fa-pizza-slice', 'fa-coffee', 'fa-ice-cream', 'fa-drumstick-bite', 'fa-fish', 'fa-glass-cheers'];
 
     // ==========================================
-    // 5. واجهة المستخدم (UI)
+    // 6. واجهة المستخدم (UI)
     // ==========================================
     return (
-        /* المسافة السفلية pb-[140px] تضمن عدم قص الشاشة على الموبايل */
         <div className="space-y-5 md:space-y-6 fade-up pb-[140px] md:pb-12 max-w-7xl mx-auto w-full">
             
             {/* 1. الهيدر وأزرار الإضافة */}
@@ -170,7 +225,7 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
                 </div>
 
                 <div className="flex gap-2 w-full md:w-auto">
-                    <button onClick={() => setShowCategoryModal(true)} className="flex-1 md:flex-none bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 px-3 py-2.5 md:py-2 rounded-xl text-xs md:text-sm font-bold transition-colors flex items-center justify-center gap-2">
+                    <button onClick={() => openCategoryModal()} className="flex-1 md:flex-none bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 px-3 py-2.5 md:py-2 rounded-xl text-xs md:text-sm font-bold transition-colors flex items-center justify-center gap-2">
                         <i className="fas fa-folder-plus text-[#EA580C]"></i> قسم جديد
                     </button>
                     <button onClick={() => { if(!categories || categories.length === 0) return showToast("أضف قسم أولاً", "error"); openItemModal(); }} className="flex-1 md:flex-none bg-[#EA580C] hover:bg-orange-700 text-white px-3 py-2.5 md:py-2 rounded-xl text-xs md:text-sm font-bold transition-all shadow-md flex items-center justify-center gap-2">
@@ -179,10 +234,10 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
                 </div>
             </div>
 
-            {/* 2. شريط الأقسام (الفلتر) */}
+            {/* 2. شريط الأقسام (الفلتر مع التعديل) */}
             <div className="bg-white p-3 md:p-4 rounded-2xl shadow-sm border border-slate-100">
                 <h4 className="text-xs md:text-sm font-black text-slate-700 mb-3 flex items-center gap-2">
-                    <i className="fas fa-filter text-slate-400"></i> فلترة بالقسم
+                    <i className="fas fa-filter text-slate-400"></i> الأقسام (اضغط على القلم للتعديل)
                 </h4>
                 <div className="flex gap-2.5 overflow-x-auto hide-scrollbar pb-1 snap-x touch-pan-x">
                     <button 
@@ -193,13 +248,22 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
                     </button>
                     {!categories || categories.length === 0 ? null : (
                         categories.map(cat => (
-                            <button 
-                                key={cat.id} 
-                                onClick={() => setSelectedFilterCategory(cat.id)}
-                                className={`snap-start whitespace-nowrap px-4 py-2 rounded-xl font-bold text-xs transition-all border flex items-center gap-2 shrink-0 ${selectedFilterCategory === cat.id ? 'border-[#EA580C] bg-[#EA580C] text-white shadow-md' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
-                            >
-                                <i className={`fas ${cat.icon}`}></i> {cat.name}
-                            </button>
+                            <div key={cat.id} className="relative group shrink-0 flex items-center">
+                                {/* زر الفلترة */}
+                                <button 
+                                    onClick={() => setSelectedFilterCategory(cat.id)}
+                                    className={`snap-start whitespace-nowrap pl-8 pr-4 py-2 rounded-xl font-bold text-xs transition-all border flex items-center gap-2 w-full ${selectedFilterCategory === cat.id ? 'border-[#EA580C] bg-[#EA580C] text-white shadow-md' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                                >
+                                    <i className={`fas ${cat.icon}`}></i> {cat.name}
+                                </button>
+                                {/* زر التعديل الصغير (متموضع مطلقاً جهة اليسار) */}
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); openCategoryModal(cat); }}
+                                    className={`absolute left-1 w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${selectedFilterCategory === cat.id ? 'text-white/80 hover:text-white hover:bg-white/20' : 'text-slate-400 hover:text-[#EA580C] hover:bg-orange-50'}`}
+                                >
+                                    <i className="fas fa-pen text-[10px]"></i>
+                                </button>
+                            </div>
                         ))
                     )}
                 </div>
@@ -207,8 +271,6 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
 
             {/* 3. سجل الأصناف */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
-                
-                {/* البحث */}
                 <div className="p-3 md:p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
                     <h4 className="text-xs md:text-sm font-black text-slate-700 hidden sm:block">قائمة الأصناف</h4>
                     <div className="relative w-full sm:w-72">
@@ -217,7 +279,6 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
                     </div>
                 </div>
 
-                {/* القائمة */}
                 <div className="p-3 md:p-4 min-h-[300px]">
                     {!menuItems ? (
                         <div className="flex justify-center items-center py-20"><i className="fas fa-circle-notch fa-spin text-3xl text-[#EA580C]"></i></div>
@@ -232,20 +293,16 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
                                 const cat = categories?.find(c => c.id === item.category_id);
                                 return (
                                     <div key={item.id} className="border border-slate-100 rounded-2xl p-4 hover:border-[#EA580C] hover:shadow-md transition-all flex flex-col justify-between bg-white relative group">
-                                        
-                                        {/* أزرار التعديل والحذف (تظهر دائماً في الموبايل وتتأثر بالهوفر في الكمبيوتر) */}
                                         <div className="absolute top-3 left-3 flex gap-1 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button onClick={() => openItemModal(item)} className="w-7 h-7 rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white flex items-center justify-center transition-colors border border-blue-100"><i className="fas fa-pen text-[10px]"></i></button>
                                             <button onClick={() => handleDeleteItem(item.id, item.name)} className="w-7 h-7 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-colors border border-rose-100"><i className="fas fa-trash text-[10px]"></i></button>
                                         </div>
-
-                                        <div className="mb-4 pr-16"> {/* pr-16 to avoid overlapping with buttons */}
+                                        <div className="mb-4 pr-16">
                                             <h4 className="font-black text-slate-800 text-sm md:text-base leading-tight">{item.name}</h4>
                                             <span className="text-[9px] md:text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded mt-1.5 inline-flex items-center gap-1 border border-slate-200">
                                                 <i className={`fas ${cat?.icon || 'fa-tag'}`}></i> {cat?.name || 'بدون قسم'}
                                             </span>
                                         </div>
-                                        
                                         <div className="flex justify-between items-center pt-3 border-t border-slate-100 border-dashed">
                                             <div>
                                                 <span className="block text-[9px] md:text-[10px] font-bold text-slate-400">سعر البيع</span>
@@ -265,7 +322,6 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
                     )}
                 </div>
 
-                {/* أزرار الـ Pagination */}
                 {totalPages > 1 && (
                     <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-center">
                         <div className="flex items-center justify-between bg-white px-3 py-2 rounded-xl shadow-sm border border-slate-100 w-full max-w-sm">
@@ -282,17 +338,17 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
             </div>
 
             {/* ===================================== */}
-            {/* Modal: إضافة قسم */}
+            {/* Modal: إضافة / تعديل قسم */}
             {/* ===================================== */}
             {showCategoryModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowCategoryModal(false)}></div>
                     <div className="relative bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden animate-view">
                         <div className="bg-slate-50 p-4 border-b border-slate-100 flex justify-between items-center">
-                            <h3 className="font-black text-slate-800 text-sm md:text-base">إضافة قسم جديد</h3>
+                            <h3 className="font-black text-slate-800 text-sm md:text-base">{editingCategory ? 'تعديل القسم' : 'إضافة قسم جديد'}</h3>
                             <button onClick={() => setShowCategoryModal(false)} className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-rose-500 hover:text-white transition-colors"><i className="fas fa-times text-xs"></i></button>
                         </div>
-                        <form onSubmit={handleAddCategory} className="p-4 md:p-5 space-y-4">
+                        <form onSubmit={handleSaveCategory} className="p-4 md:p-5 space-y-4">
                             <div>
                                 <label className="block text-[10px] md:text-xs font-bold text-slate-500 mb-1">اسم القسم (مثال: مشويات، بيتزا)</label>
                                 <input type="text" required value={catName} onChange={e => setCatName(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 md:py-3 outline-none focus:border-[#EA580C] font-bold text-xs md:text-sm" placeholder="أدخل اسم القسم..." />
@@ -307,9 +363,18 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
                                     ))}
                                 </div>
                             </div>
-                            <button type="submit" disabled={isSubmitting} className="w-full bg-[#EA580C] hover:bg-orange-600 text-white font-black py-3 rounded-xl shadow-lg shadow-orange-500/30 flex justify-center items-center gap-2 mt-2 text-sm">
-                                {isSubmitting ? <i className="fas fa-circle-notch fa-spin"></i> : 'حفظ القسم'}
-                            </button>
+                            
+                            <div className="pt-2 flex flex-col gap-2">
+                                <button type="submit" disabled={isSubmitting} className="w-full bg-[#EA580C] hover:bg-orange-600 text-white font-black py-3 rounded-xl shadow-lg shadow-orange-500/30 flex justify-center items-center gap-2 text-sm">
+                                    {isSubmitting ? <i className="fas fa-circle-notch fa-spin"></i> : (editingCategory ? 'حفظ التعديلات' : 'حفظ القسم')}
+                                </button>
+                                
+                                {editingCategory && (
+                                    <button type="button" onClick={handleDeleteCategory} disabled={isSubmitting} className="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold py-3 rounded-xl flex justify-center items-center gap-2 text-sm transition-colors mt-2">
+                                        <i className="fas fa-trash"></i> حذف هذا القسم
+                                    </button>
+                                )}
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -360,7 +425,7 @@ window.Module_Menu = function({ restaurantId, userId, showToast }) {
                 </div>
             )}
 			
-			         {/* إعلان النسخة المدفوعة (الأسفل) */}
+            {/* إعلان النسخة المدفوعة */}
             <div className="mt-8 bg-gradient-to-bl from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-6 sm:p-8 text-center shadow-xl border border-yellow-500/20 relative overflow-hidden group w-full">
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-yellow-500/20 rounded-full blur-3xl group-hover:bg-yellow-500/30 transition-colors"></div>
                 <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-[#EA580C]/20 rounded-full blur-3xl"></div>

@@ -2,7 +2,7 @@
 // MentraClinics Lite - Service Worker (Offline First)
 // ==========================================
 
-const CACHE_NAME = 'Mentra-RestaurantLite-v1.0';
+const CACHE_NAME = 'Mentra-RestaurantLite-v2.0';
 
 // الملفات الأساسية التي يجب تحميلها فور تشغيل البرنامج لأول مرة
 const CORE_ASSETS = [
