@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0F172A">
+    <title>MentraRestaurant Lite | كاشير ونظام إدارة المطاعم</title>
+	<link rel="icon" href="assets/logo.png">
+    <!-- PWA Meta Tags & Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MentraResto">
+    <!-- يمكنك إضافة أيقونة هنا مستقبلاً: <link rel="apple-touch-icon" href="icon-192.png"> -->
+
+
+<!-- الأساسيات والـ SEO العام -->
+    <title>MentraRestaurant Lite | كاشير ونظام إدارة المطاعم والكافيهات بدون إنترنت</title>
+    <meta name="description" content="برنامج كاشير ونظام إدارة المطاعم والكافيهات POS المطور. إصدار أوفلاين سريع وآمن يعمل بالكامل على المتصفح لإدارة المبيعات، الطاولات، المنيو، والخزينة والحسابات بدون إنترنت.">
+    <meta name="keywords" content="كاشير مطاعم, برنامج POS أوفلاين, إدارة كافيهات, نقاط البيع للمطاعم, MentraResto, كاشير بدون إنترنت, نظام حسابات المطاعم">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://minafathiaramnious.github.io/MentraRestaurantLite/"> <!-- استبدل yourdomain.com برابط موقعك الفعلي -->
+    
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    
+    <!-- وسوم منصات التواصل الاجتماعي (Open Graph / Facebook) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://minafathiaramnious.github.io/MentraRestaurantLite/">
+    <meta property="og:title" content="MentraRestaurant Lite | كاشير ونظام إدارة المطاعم">
+    <meta property="og:description" content="نظام نقاط البيع (POS) المطور للمطاعم والكافيهات. مبيعات، طاولات، وإدارة منيو تعمل بالكامل أوفلاين على متصفحك دون الحاجة لسيرفرات سحابية. بياناتك ملكك وحدك.">
+    <meta property="og:image" content="https://minafathiaramnious.github.io/MentraRestaurantLite/assets/logo.png"> <!-- يفضل تصميم صورة مخصصة للمشاركة بأبعاد 1200x630 -->
+
+    <!-- وسوم تويتر (Twitter Cards) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MentraRestaurant Lite | كاشير ونظام إدارة المطاعم">
+    <meta name="twitter:description" content="نظام نقاط البيع (POS) المطور للمطاعم والكافيهات يعمل بالكامل أوفلاين على متصفحك.">
+    <meta name="twitter:image" content="https://minafathiaramnious.github.io/MentraRestaurantLite/assets/logo.png">
+
+    <!-- PWA Meta Tags & Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MentraResto">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+
+    <!-- تحسين التحميل للخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+
+
+    <!-- تحسين التحميل للخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #0F172A; 
+            color: #F8FAFC;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* تأثيرات الخلفية العائمة */
+        .bg-shapes { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .shape { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: float 20s infinite alternate ease-in-out; }
+        .shape-1 { background: #EA580C; width: 400px; height: 400px; top: -100px; right: -100px; }
+        .shape-2 { background: #F97316; width: 500px; height: 500px; bottom: -150px; left: -100px; animation-delay: -5s; }
+        .shape-3 { background: #B45309; width: 300px; height: 300px; top: 40%; left: 30%; animation-duration: 25s; opacity: 0.15; }
+
+        @keyframes float { 
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); } 
+            100% { transform: translate(-50px, 80px) scale(1.1) rotate(10deg); } 
+        }
+
+        /* حركات الظهور */
+        .fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(30px); }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* تأثيرات البطاقات الزجاجية */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(234, 88, 12, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(234, 88, 12, 0.1);
+        }
+
+        ::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col selection:bg-[#EA580C] selection:text-white">
+
+    <!-- أشكال الخلفية -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="relative z-10 flex flex-col flex-1">
+        
+        <!-- الهيدر (Navbar) -->
+        <header class="py-6 px-6 md:px-12 flex justify-between items-center fade-up">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#EA580C] to-[#F97316] flex items-center justify-center text-white text-2xl shadow-lg shadow-orange-500/20">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Mentra<span class="text-[#F97316]">Resto</span></h1>
+            </div>
+            
+            <!-- روابط الهيدر للشاشات الكبيرة -->
+            <nav class="hidden md:flex items-center gap-6">
+                <a href="Tutorial.html" class="text-sm font-bold text-slate-300 hover:text-white transition-colors flex items-center gap-2"><i class="fas fa-graduation-cap text-[#EA580C]"></i> شرح النظام</a>
+                <a href="subscriptions.html" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded-full font-bold text-sm transition-all border border-white/10">
+                    تسجيل الدخول <i class="fas fa-sign-in-alt text-[#EA580C]"></i>
+                </a>
+            </nav>
+        </header>
+
+        <!-- منطقة الـ Hero (الترحيب) -->
+        <main class="flex-1 flex flex-col items-center justify-center text-center px-4 py-12 lg:py-20 w-full">
+            
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 font-bold text-xs md:text-sm mb-8 fade-up shadow-[0_0_20px_rgba(234,88,12,0.15)]">
+                <i class="fas fa-wifi-slash animate-pulse"></i>
+                إصدار الأوفلاين - لا يحتاج لإنترنت
+                <span class="bg-white text-slate-900 text-[10px] font-black px-1.5 py-0.5 rounded ml-1">LITE</span>
+            </div>
+
+            <h2 class="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-6 max-w-4xl fade-up delay-1">
+                كاشير مطعمك.. <span class="text-transparent bg-clip-text bg-gradient-to-l from-[#EA580C] to-[#F97316]">أسرع، أذكى، وآمن تماماً.</span>
+            </h2>
+
+            <p class="text-slate-400 font-bold text-base md:text-lg lg:text-xl max-w-2xl mb-12 fade-up delay-2 leading-relaxed">
+                نظام إدارة نقاط البيع (POS) المطور للمطاعم والكافيهات. مبيعات، طاولات، وإدارة منيو تعمل بالكامل على متصفحك دون الحاجة لسيرفرات سحابية. بياناتك ملكك وحدك.
+            </p>
+
+            <!-- الأزرار (تأسيس، تثبيت، شرح، تحميل كمبيوتر) -->
+            <div class="flex flex-col sm:flex-row flex-wrap justify-center gap-4 fade-up delay-3 w-full max-w-4xl px-4">
+                
+                <!-- زر بدء العمل -->
+                <a href="subscriptions.html" class="group relative px-6 md:px-8 py-4 bg-gradient-to-l from-[#EA580C] to-[#F97316] text-white rounded-2xl font-black text-sm md:text-lg shadow-[0_10px_40px_rgba(234,88,12,0.3)] hover:shadow-[0_10px_50px_rgba(234,88,12,0.5)] transition-all hover:-translate-y-1 overflow-hidden w-full sm:w-auto flex items-center justify-center gap-3">
+                    <div class="absolute inset-0 bg-white/20 translate-x-full group-hover:-translate-x-full transition-transform duration-700 skew-x-12"></div>
+                    <i class="fas fa-play-circle text-xl"></i>
+                    تأسيس المطعم
+                </a>
+
+                <!-- زر تثبيت التطبيق PWA (يظهر فقط عبر الجافاسكريبت إذا كان المتصفح يدعم) -->
+                <button id="installAppBtn" class="hidden group relative px-6 md:px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-black text-sm md:text-lg border border-white/20 transition-all w-full sm:w-auto flex items-center justify-center gap-3">
+                    <i class="fas fa-mobile-screen-button text-sky-400"></i>
+                    تثبيت كـ تطبيق
+                </button>
+
+                <!-- زر تحميل نسخة الكمبيوتر -->
+                <a href="https://1drv.ms/u/c/f49ed9a7d9f9ad6c/IQBPbAQYbOdSQo_6PFpTFo_qAVNOk9ypwCA99Dh1im_sls0?e=67QB9k" download class="group relative px-6 md:px-8 py-4 bg-[#1E293B] hover:bg-[#334155] text-white rounded-2xl font-black text-sm md:text-lg border border-slate-700 transition-all w-full sm:w-auto flex items-center justify-center gap-3">
+                    <i class="fas fa-desktop text-emerald-400"></i>
+                    نسخة الكمبيوتر
+                </a>
+
+                <!-- زر الشرح (يظهر للموبايل فقط لأن الهيدر يختفي) -->
+                <a href="Tutorial.html" class="md:hidden group relative px-6 py-4 bg-[#1E293B] text-slate-300 rounded-2xl font-black text-sm border border-slate-700 transition-all w-full flex items-center justify-center gap-3">
+                    <i class="fas fa-graduation-cap text-[#EA580C]"></i>
+                    شرح استخدام النظام
+                </a>
+
+            </div>
+
+            <!-- المميزات (Features Grid) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-20 max-w-6xl w-full px-4 fade-up delay-3">
+                
+                <div class="glass-card p-6 rounded-3xl text-right flex flex-col items-start group">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl mb-4 border border-blue-500/30 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="font-black text-lg text-white mb-2">سرعة فائقة (لا تحميل)</h3>
+                    <p class="text-sm font-bold text-slate-400 leading-relaxed">استجابة لحظية في فتح الفواتير وإغلاقها بفضل قاعدة بيانات IndexedDB المحلية.</p>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl text-right flex flex-col items-start group">
+                    <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-xl mb-4 border border-orange-500/30 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-cash-register"></i>
+                    </div>
+                    <h3 class="font-black text-lg text-white mb-2">كاشير متكامل</h3>
+                    <p class="text-sm font-bold text-slate-400 leading-relaxed">إدارة طلبات الصالة، الدليفري، والتيك أواي مع دعم الخصومات والضرائب بسهولة.</p>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl text-right flex flex-col items-start group">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4 border border-emerald-500/30 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3 class="font-black text-lg text-white mb-2">خزينة وحسابات</h3>
+                    <p class="text-sm font-bold text-slate-400 leading-relaxed">تسجيل مباشر للإيرادات، سحب المصروفات اليومية، ومعرفة صافي الأرباح بضغطة زر.</p>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl text-right flex flex-col items-start group">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl mb-4 border border-purple-500/30 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h3 class="font-black text-lg text-white mb-2">تعدد المطاعم</h3>
+                    <p class="text-sm font-bold text-slate-400 leading-relaxed">دعم تشغيل أكثر من مطعم أو فرع على نفس الجهاز بقواعد بيانات منفصلة 100%.</p>
+                </div>
+
+            </div>
+
+            <!-- ================= إعلان النسخة المدفوعة (Pro Version Ad) ================= -->
+            <div class="max-w-6xl w-full px-4 mt-24 mb-8 fade-up delay-4">
+                <div class="relative overflow-hidden bg-gradient-to-br from-[#0F172A] via-[#1E1B4B] to-[#312E81] rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-indigo-500/30 group">
+                    
+                    <!-- إضاءات خلفية ديكورية -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-indigo-500/30 transition-all duration-700"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-fuchsia-500/20 rounded-full blur-[60px] translate-y-1/2 -translate-x-1/2 pointer-events-none group-hover:bg-fuchsia-500/30 transition-all duration-700"></div>
+                    
+                    <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-12 text-center lg:text-right">
+                        
+                        <div class="flex-1">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/20 border border-indigo-400/30 rounded-full text-indigo-300 text-xs font-black mb-4 shadow-inner">
+                                <i class="fas fa-crown text-yellow-400 animate-pulse"></i> ارتقِ بمطعمك لأعلى مستوى
+                            </div>
+                            <h3 class="text-3xl md:text-4xl font-black text-white mb-4 tracking-tight leading-tight">
+                                هل تمتلك أكثر من فرع؟ <br class="hidden md:block">تعرف على <span class="text-transparent bg-clip-text bg-gradient-to-l from-indigo-400 to-fuchsia-400">MentraResto PRO</span>
+                            </h3>
+                            <p class="text-slate-300 font-bold text-sm md:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                                النسخة السحابية الشاملة توفر لك: ربط الفروع، شاشات المطبخ الذكية (KDS)، إدارة المخازن وحساب التكاليف (Recipes)، ومتابعة حية للأرباح من موبايلك أينما كنت.
+                            </p>
+                        </div>
+                        
+                        <a href="https://wa.me/201211934816" target="_blank" class="w-full lg:w-auto bg-gradient-to-l from-indigo-500 to-fuchsia-600 hover:from-indigo-400 hover:to-fuchsia-500 text-white font-black px-8 py-4 rounded-2xl shadow-[0_10px_30px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(99,102,241,0.6)] flex items-center justify-center gap-3 shrink-0 whitespace-nowrap text-lg group/btn">
+                            <i class="fab fa-whatsapp text-3xl"></i>
+                            <span>تواصل للترقية الآن</span>
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- الفوتر -->
+        <footer class="py-8 text-center border-t border-white/5 mt-auto">
+            <div class="flex items-center justify-center gap-2 text-slate-500 text-sm font-bold">
+                <i class="fas fa-code text-[#EA580C]"></i> تم التطوير بواسطة <span class="text-white font-black">Mentra Systems</span>
+            </div>
+            <p class="text-[10px] text-slate-600 font-bold mt-2 tracking-widest uppercase">Version 1.0 - Offline Edition</p>
+        </footer>
+
+    </div>
+
+    <!-- سكريبت تفعيل PWA وزر التثبيت -->
+    <script>
+        // 1. تسجيل Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => console.log('SW Registered'))
+                    .catch(err => console.log('SW Registration Failed', err));
+            });
+        }
+
+        // 2. منطق زر تثبيت التطبيق
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // منع المتصفح من إظهار رسالة التثبيت التلقائية المزعجة
+            e.preventDefault();
+            // حفظ الحدث لاستخدامه عند الضغط على الزر
+            deferredPrompt = e;
+            // إظهار زر التثبيت الخاص بنا
+            installBtn.classList.remove('hidden');
+            installBtn.classList.add('flex'); // للمحافظة على تنسيق flex
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt !== null) {
+                // إظهار نافذة التثبيت الخاصة بالمتصفح
+                deferredPrompt.prompt();
+                // انتظار اختيار المستخدم
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                // مسح الحدث وإخفاء الزر بعد الاستخدام
+                deferredPrompt = null;
+                installBtn.classList.add('hidden');
+                installBtn.classList.remove('flex');
+            }
+        });
+
+        // إخفاء الزر إذا تم تثبيت التطبيق بنجاح
+        window.addEventListener('appinstalled', () => {
+            deferredPrompt = null;
+            installBtn.classList.add('hidden');
+            installBtn.classList.remove('flex');
+        });
+    </script>
+</body>
+</html>

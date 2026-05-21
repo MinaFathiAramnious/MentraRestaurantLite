@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0F172A">
+    <title>MentraResto | دليل الاستخدام الشامل</title>
+
+    <link rel="manifest" href="manifest.json">
+	<link rel="icon" href="assets/logo.png">
+    <!-- الخطوط والأيقونات -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #F8FAFC; 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; 
+        }
+        
+        /* تخصيص شريط التمرير (Scrollbar) */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #EA580C; }
+
+        /* تأثيرات الظهور عند التمرير الذكية */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        /* خلفية الهيدر العصرية */
+        .hero-bg { 
+            background-color: #0F172A;
+            background-image: radial-gradient(at 0% 0%, hsla(24, 93%, 45%, 0.15) 0px, transparent 50%),
+                              radial-gradient(at 100% 100%, hsla(24, 93%, 45%, 0.1) 0px, transparent 50%);
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        /* حاوية الصور الاحترافية */
+        .mockup-wrapper {
+            position: relative;
+            border-radius: 1.5rem;
+            padding: 0.5rem;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s ease;
+        }
+        .mockup-wrapper:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px -15px rgba(234,88,12,0.2), 0 0 0 1px rgba(234,88,12,0.1);
+        }
+        .mockup-img {
+            border-radius: 1rem;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border: 1px solid #e2e8f0;
+            background-color: #f1f5f9; /* لون بديل في حال عدم وجود الصورة */
+            min-height: 250px;
+        }
+
+        /* البطاقات الزجاجية للإعلان */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(234, 88, 12, 0.3);
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-[#EA580C] selection:text-white">
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 transition-all duration-300 shadow-sm" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="window.location.href='index.html'">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-[#EA580C] to-[#F97316] flex items-center justify-center text-white shadow-lg shadow-orange-500/30 group-hover:scale-105 transition-transform">
+                    <i class="fas fa-utensils text-lg md:text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-black text-xl md:text-2xl text-slate-900 leading-none">Mentra<span class="text-[#EA580C]">Resto</span></span>
+                    <span class="text-[10px] font-bold tracking-widest text-slate-400 mt-1 uppercase">Offline System</span>
+                </div>
+            </div>
+            <a href="index.html" class="group flex items-center gap-2 text-sm font-bold text-slate-600 bg-slate-100 hover:bg-[#EA580C] hover:text-white px-5 py-2.5 rounded-full transition-all duration-300">
+                <span>الرئيسية</span>
+                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ================= HERO SECTION ================= -->
+    <section class="hero-bg pt-36 pb-24 md:pt-48 md:pb-32 text-center px-4 relative">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-30"></div>
+        
+        <div class="relative z-10 max-w-4xl mx-auto reveal active">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 font-bold text-xs md:text-sm mb-8 shadow-[0_0_20px_rgba(234,88,12,0.15)]">
+                <i class="fas fa-book-open"></i> الدليل الشامل للاستخدام
+                <span class="bg-white text-slate-900 text-[10px] font-black px-1.5 py-0.5 rounded ml-1">LITE</span>
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-6 tracking-tight">
+                أدر مطعمك باحترافية مع <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-l from-[#EA580C] to-[#FDBA74]">MentraResto Lite</span>
+            </h1>
+            
+            <p class="text-base md:text-xl text-slate-400 font-semibold leading-relaxed max-w-2xl mx-auto">
+                تعرف على كيفية عمل الكاشير، تنظيم المنيو، وإدارة الحسابات. صُمم هذا النظام ليكون 
+                <span class="text-slate-200">الأسرع والأكثر أماناً</span> بفضل تقنية حفظ البيانات على جهازك بدون إنترنت.
+            </p>
+        </div>
+    </section>
+
+    <!-- ================= TUTORIAL STEPS ================= -->
+    <section class="py-20 md:py-32 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 md:space-y-40">
+
+            <!-- Step 1 -->
+            <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16 reveal">
+                <div class="w-full md:w-1/2 order-2 md:order-1">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-orange-50 text-[#EA580C] font-black text-xl mb-6 shadow-sm border border-orange-100">1</div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-4">تأسيس المطعم وتسجيل الدخول</h2>
+                    <p class="text-slate-500 text-lg font-semibold leading-relaxed mb-6">
+                        تبدأ رحلتك من شاشة الدخول <code class="bg-slate-100 text-rose-500 px-2 py-1 rounded-lg text-sm font-mono">subscriptions.html</code>. قم بإنشاء قاعدة بيانات مطعمك الخاصة محلياً.
+                    </p>
+                    <ul class="space-y-4 text-slate-600 font-bold">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-[#EA580C] text-lg mt-0.5"></i>
+                            <span>لا حاجة لإيميل أو إنترنت لتأسيس المطعم، كل شيء يتم على جهازك.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-[#EA580C] text-lg mt-0.5"></i>
+                            <span>ميزة <span class="bg-orange-50 text-orange-600 px-2 rounded">الدخول السريع</span> بضغطة زر للكاشير توفيراً للوقت.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="w-full md:w-1/2 order-1 md:order-2">
+                    <div class="mockup-wrapper">
+                        <!-- استبدل src بمسار الصورة الحقيقي -->
+                        <img src="assets/step1.PNG" alt="شاشة الدخول" class="mockup-img">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16 reveal">
+                <div class="w-full md:w-1/2 order-1">
+                    <div class="mockup-wrapper">
+                        <img src="assets/step2.PNG" alt="لوحة التحكم" class="mockup-img">
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 order-2">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-sky-50 text-sky-500 font-black text-xl mb-6 shadow-sm border border-sky-100">2</div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-4">لوحة التحكم والإحصائيات</h2>
+                    <p class="text-slate-500 text-lg font-semibold leading-relaxed mb-6">
+                        مركز القيادة الخاص بك. تعرض الشاشة الرئيسية ملخصاً لأداء المطعم لليوم المحدد بشكل فوري.
+                    </p>
+                    <ul class="space-y-4 text-slate-600 font-bold">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-chart-line text-sky-500 text-lg mt-0.5"></i>
+                            <span>متابعة إجمالي المبيعات، عدد الطلبات المكتملة، والطاولات المشغولة.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-fire text-sky-500 text-lg mt-0.5"></i>
+                            <span>قائمة حية للطلبات <span class="bg-sky-50 text-sky-600 px-2 rounded">قيد التجهيز</span> لمتابعة عمل المطبخ.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 3 (The Core POS) -->
+            <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16 reveal">
+                <div class="w-full md:w-1/2 order-2 md:order-1">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 font-black text-xl mb-6 shadow-sm border border-emerald-100">3</div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-4">شاشة الكاشير (POS) الذكية</h2>
+                    <p class="text-slate-500 text-lg font-semibold leading-relaxed mb-6">
+                        القلب النابض للنظام! مصممة للعمل بسرعة فائقة لضمان تلبية طلبات الزبائن في أوقات الذروة دون أي تأخير.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm font-bold text-slate-600">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <i class="fas fa-shopping-bag text-[#EA580C] mb-2 text-xl block"></i>
+                            أنواع الطلبات (تيك أواي، صالة، دليفري)
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <i class="fas fa-bolt text-amber-500 mb-2 text-xl block"></i>
+                            إغلاق الطلب والدفع المباشر بضغطة واحدة
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <i class="fas fa-print text-slate-700 mb-2 text-xl block"></i>
+                            طباعة حرارية فورية ومرنة
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <i class="fas fa-percentage text-emerald-500 mb-2 text-xl block"></i>
+                            تطبيق الخصومات وتسجيل بيانات العميل
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 order-1 md:order-2">
+                    <div class="mockup-wrapper border-4 border-[#EA580C]/20">
+                        <img src="assets/step3.PNG" alt="شاشة الكاشير" class="mockup-img">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16 reveal">
+                <div class="w-full md:w-1/2 order-1">
+                    <div class="mockup-wrapper">
+                        <img src="assets/step4.PNG" alt="إدارة المنيو" class="mockup-img">
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 order-2">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-purple-50 text-purple-500 font-black text-xl mb-6 shadow-sm border border-purple-100">4</div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-4">إدارة المنيو والأصناف</h2>
+                    <p class="text-slate-500 text-lg font-semibold leading-relaxed mb-6">
+                        قم ببناء قائمة طعامك بسهولة. أضف الأقسام والأصناف وعدل الأسعار في ثوانٍ.
+                    </p>
+                    <ul class="space-y-4 text-slate-600 font-bold">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-layer-group text-purple-500 text-lg mt-0.5"></i>
+                            <span>تقسيم المنيو لأقسام (مشويات، بيتزا، مشروبات) مع أيقونات مميزة.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-tag text-purple-500 text-lg mt-0.5"></i>
+                            <span>تحديد <span class="text-slate-900">سعر البيع</span> وتسجيل <span class="text-slate-900">التكلفة</span> لمعرفة الهوامش.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 5 & 6 (Combined for flow) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 reveal">
+                <!-- Orders -->
+                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 hover:shadow-xl transition-shadow">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-black text-xl mb-6">5</div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-3">سجل الطلبات والفواتير</h3>
+                    <p class="text-slate-500 font-semibold mb-6">مكان واحد لإدارة كل العمليات. حول الطلبات إلى "مدفوعة"، أو قم بتعديل فواتير الصالة المفتوحة بسهولة.</p>
+                    <div class="mockup-wrapper">
+                        <img src="assets/step5.PNG" alt="الطلبات" class="mockup-img min-h-[150px]">
+                    </div>
+                </div>
+
+                <!-- Accounting -->
+                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 hover:shadow-xl transition-shadow">
+                    <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center font-black text-xl mb-6">6</div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-3">الخزينة والحسابات</h3>
+                    <p class="text-slate-500 font-semibold mb-6">تسجيل المصروفات اليدوية، حساب صافي الخزينة آلياً، واستخراج تقارير الوردية (PDF / Excel).</p>
+                    <div class="mockup-wrapper">
+                        <img src="assets/step6.PNG" alt="الخزينة" class="mockup-img min-h-[150px]">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16 reveal">
+                <div class="w-full md:w-1/2 order-2 md:order-1">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 font-black text-xl mb-6 shadow-sm border border-rose-100">7</div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-4">الصلاحيات والنسخ الاحتياطي</h2>
+                    <p class="text-slate-500 text-lg font-semibold leading-relaxed mb-6">
+                        تحكم في من يدخل للنظام وحافظ على أمان بياناتك. <strong class="text-rose-500">نظراً لأن النظام محلي، النسخ الاحتياطي الدوري إلزامي.</strong>
+                    </p>
+                    <ul class="space-y-4 text-slate-600 font-bold">
+                        <li class="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><i class="fas fa-user-tie"></i></div>
+                            <span>المدير (صلاحيات كاملة)</span>
+                        </li>
+                        <li class="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"><i class="fas fa-desktop"></i></div>
+                            <span>الكاشير (بيع وخزينة)</span>
+                        </li>
+                        <li class="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center"><i class="fas fa-concierge-bell"></i></div>
+                            <span>الويتر (طلب أوردرات الصالة فقط)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="w-full md:w-1/2 order-1 md:order-2">
+                    <div class="mockup-wrapper border-4 border-rose-100">
+                        <img src="assets/step7.PNG" alt="الإعدادات" class="mockup-img">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ================= PRO ADVERTISEMENT SECTION ================= -->
+    <section class="py-24 relative overflow-hidden bg-[#0B1120]">
+        <!-- زينة متطورة -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/20 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-sky-500/10 rounded-full blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/3"></div>
+
+        <div class="max-w-6xl mx-auto px-4 relative z-10 reveal">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[#EA580C]/20 to-[#F97316]/20 border border-orange-500/30 text-orange-400 font-black text-xs md:text-sm mb-6 shadow-inner">
+                    <i class="fas fa-crown text-yellow-400 animate-pulse"></i> ارتقِ بمستوى مطعمك
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black text-white mb-6 leading-tight tracking-tight">
+                    هل لديك فروع وتحتاج للمتابعة من <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">موبايلك</span>؟
+                </h2>
+                <p class="text-slate-400 text-lg md:text-xl font-semibold max-w-3xl mx-auto leading-relaxed">
+                    النسخة المحلية ممتازة لنقاط البيع السريعة. ولكن للمطاعم الكبيرة التي تبحث عن التحكم المركزي، شاشات المطبخ الذكية (KDS)، وإدارة المخازن، نقدم لك <strong class="text-white">النسخة السحابية الشاملة (MentraResto PRO)</strong>.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                <!-- Card 1 -->
+                <div class="glass-card p-8 rounded-3xl text-right">
+                    <div class="w-14 h-14 rounded-2xl bg-sky-500/20 text-sky-400 flex items-center justify-center text-2xl mb-6"><i class="fas fa-cloud-sync"></i></div>
+                    <h3 class="text-white text-xl font-black mb-3">مزامنة سحابية للفروع</h3>
+                    <p class="text-slate-400 text-sm font-bold leading-relaxed">اربط جميع فروع مطعمك، وراقب مبيعات ومصروفات كل فرع من لوحة تحكم مركزية واحدة لحظة بلحظة.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-card p-8 rounded-3xl text-right relative overflow-hidden border-[#EA580C]/30 shadow-[0_0_30px_rgba(234,88,12,0.1)]">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/20 blur-[50px]"></div>
+                    <div class="w-14 h-14 rounded-2xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl mb-6 relative z-10"><i class="fas fa-tv"></i></div>
+                    <h3 class="text-white text-xl font-black mb-3 relative z-10">شاشات المطبخ (KDS)</h3>
+                    <p class="text-slate-400 text-sm font-bold leading-relaxed relative z-10">تخلص من الطابعات الورقية! يظهر الأوردر تلقائياً على شاشة الشيف بمجرد طلبه من الكاشير.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-card p-8 rounded-3xl text-right">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-6"><i class="fas fa-boxes"></i></div>
+                    <h3 class="text-white text-xl font-black mb-3">إدارة المخازن والجرد</h3>
+                    <p class="text-slate-400 text-sm font-bold leading-relaxed">نظام تكاليف كامل. يتم خصم المكونات من المخزن تلقائياً عند كل عملية بيع لمعرفة الجرد الفعلي.</p>
+                </div>
+            </div>
+
+            <!-- CTA Box -->
+            <div class="bg-gradient-to-r from-[#EA580C] to-[#F97316] p-8 md:p-12 rounded-[2.5rem] shadow-2xl max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="text-center md:text-right text-white">
+                    <h3 class="text-2xl md:text-3xl font-black mb-3 tracking-tight">احصل على النسخة السحابية الآن</h3>
+                    <p class="text-orange-100 font-bold text-base opacity-90">تواصل مع قسم المبيعات لمعرفة باقات الأسعار وإعداد النظام.</p>
+                </div>
+                <a href="https://wa.me/201211934816" target="_blank" class="w-full md:w-auto bg-white text-slate-900 hover:bg-slate-50 px-8 py-4 rounded-2xl font-black text-lg transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-xl flex items-center justify-center gap-3 dir-ltr group">
+                    <i class="fab fa-whatsapp text-3xl text-[#25D366] group-hover:animate-bounce"></i> 01211934816
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-[#040814] py-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3 opacity-80 hover:opacity-100 transition-opacity cursor-pointer">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#EA580C] to-[#F97316] flex items-center justify-center text-white"><i class="fas fa-utensils text-sm"></i></div>
+                <span class="font-black text-white text-lg tracking-tight">Mentra<span class="text-[#EA580C]">Resto</span></span>
+            </div>
+            <p class="text-sm font-bold text-slate-500">&copy; 2024 جميع الحقوق محفوظة. تم التطوير بواسطة <span class="text-slate-300">Mentra Systems</span>.</p>
+        </div>
+    </footer>
+
+    <!-- سكريبت تشغيل تأثيرات الظهور عند التمرير -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal').forEach((el) => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
