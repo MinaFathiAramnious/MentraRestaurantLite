@@ -250,7 +250,7 @@ window.Module_Tables = function({ restaurantId, userId, showToast }) {
                         </p>
                     </div>
                     
-                    <a href="https://wa.me/201099238386" target="_blank" className="w-full md:w-auto bg-gradient-to-l from-indigo-500 to-fuchsia-600 hover:from-indigo-400 hover:to-fuchsia-500 text-white font-black px-8 py-4 rounded-2xl shadow-[0_10px_30px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(99,102,241,0.6)] flex items-center justify-center gap-3 shrink-0 whitespace-nowrap text-sm md:text-base group/btn">
+                    <a href="https://wa.me/201211934816" target="_blank" className="w-full md:w-auto bg-gradient-to-l from-indigo-500 to-fuchsia-600 hover:from-indigo-400 hover:to-fuchsia-500 text-white font-black px-8 py-4 rounded-2xl shadow-[0_10px_30px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(99,102,241,0.6)] flex items-center justify-center gap-3 shrink-0 whitespace-nowrap text-sm md:text-base group/btn">
                         تواصل للترقية الآن
                         <i className="fas fa-arrow-left group-hover/btn:-translate-x-1 transition-transform"></i>
                     </a>
